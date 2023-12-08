@@ -75,7 +75,7 @@ def calculate_file_extensions(directory):
     return file_extensions
 
 def display_directory_sizes_and_disk_space(drive):
-    """Displays disk space information and directory sizes."""
+    #Displays disk space information and directory sizes.
     while True:
         space_info = get_disk_space_info(drive)
 
@@ -118,7 +118,7 @@ def display_directory_sizes_and_disk_space(drive):
                 selected_directory = sub_selected_directory
 
 def select_directory(directory_sizes):
-    """Prompt the user to select a directory."""
+    #Prompt the user to select a directory.
     while True:
         try:
             print("\n[+] Directories:")
