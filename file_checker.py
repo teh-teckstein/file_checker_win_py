@@ -1,8 +1,6 @@
 import os
 import psutil
 from collections import defaultdict
-import matplotlib as plt
-
 
 def get_size_format(b, factor=1024, suffix="B"):
 #    Scale bytes to its proper byte format
@@ -76,70 +74,20 @@ def calculate_file_extensions(directory):
 
     return file_extensions
 
-def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=10):
+def display_directory_sizes_and_disk_space(drive, num_files=15, num_directories=10):
     # Displays disk space information, top files, and top directories.
-     while True:
+    while True:
         space_info = get_disk_space_info(drive)
-
-        print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
-        print(f"[+] Used space on {drive}: {space_info['used_space']}")
-        print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
-
         print("\n[+] Top Directories:")
         directory_sizes = get_directory_sizes(drive)
 
         total_directory_space = sum(entry['size_in_bytes'] for entry in directory_sizes)
-        directory_labels = [entry['path'] for entry in directory_sizes[:num_directories]]
-        directory_sizes_bytes = [entry['size_in_bytes'] for entry in directory_sizes[:num_directories]]
-        directory_percentages = [(size / total_directory_space) * 100 for size in directory_sizes_bytes]
-
         for i, entry in enumerate(directory_sizes[:num_directories], start=1):
-            print(f"{i}. {entry['path']}: Size - {entry['size']} ({directory_percentages[i - 1]:.2f}%)")
-
-        # Plot bar chart for directories
-        plt.bar(directory_labels, directory_sizes_bytes, color='blue')
-        plt.title('Top Directories')
-        plt.xlabel('Directories')
-        plt.ylabel('Size (bytes)')
-        plt.show()
+            percentage = (entry['size_in_bytes'] / total_directory_space) * 100
+            print(f"{i}. {entry['path']}: Size - {entry['size']} ({percentage:.2f}%)")
 
         selected_directory = select_directory(directory_sizes)
         if selected_directory is None:
-            break
-
-        while True:
-            space_info = get_disk_space_info(drive)
-
-            print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
-            print(f"[+] Used space on {drive}: {space_info['used_space']}")
-            print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
-
-            print("\n[+] Selected Directory:")
-            print(f"{selected_directory}")
-
-            # Calculate and display top files
-            files_in_selected_directory = calculate_file_extensions(selected_directory)
-            sorted_files = sorted(files_in_selected_directory.items(), key=lambda x: x[1], reverse=True)[:num_files]
-            files_in_selected_directory = calculate_file_extensions(selected_directory)
-            sorted_files = sorted(files_in_selected_directory.items(), key=lambda x: x[1], reverse=True)[:num_files]
-
-            if sorted_files:
-                print("\n[+] Top Files:")
-                total_file_space = sum(size for ext, size in sorted_files)
-                file_labels = [ext for ext, size in sorted_files]
-                file_sizes_bytes = [size for ext, size in sorted_files]
-                file_percentages = [(size / total_file_space) * 100 for size in file_sizes_bytes]
-
-                for i, (ext, size) in enumerate(sorted_files):
-                    formatted_size = get_size_format(size)
-                    print(f"    {ext}: Size - {formatted_size} ({file_percentages[i]:.2f}%)")
-
-                # Plot bar chart for files
-                plt.bar(file_labels, file_sizes_bytes, color='green')
-                plt.title('Top Files')
-                plt.xlabel('File Extensions')
-                plt.ylabel('Size (bytes)')
-                plt.show()
 
             if sorted_files:
                 print("\n[+] Top Files:")
