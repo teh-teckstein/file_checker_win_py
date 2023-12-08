@@ -1,6 +1,8 @@
 import os
 import psutil
 from collections import defaultdict
+import matplotlib.pyplot as plt
+
 
 def get_size_format(b, factor=1024, suffix="B"):
 #    Scale bytes to its proper byte format
