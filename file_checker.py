@@ -1,5 +1,6 @@
 import os
 import psutil
+from collections import defaultdict
 
 def get_size_format(b, factor=1024, suffix="B"):
 #    Scale bytes to its proper byte format
@@ -54,15 +55,33 @@ def get_directory_sizes(base_directory):
     directory_sizes = sorted(directory_sizes, key=lambda x: x['size_in_bytes'], reverse=True)
 
     return directory_sizes
+    
+def calculate_file_extensions(directory):
+    # Calculate the space taken by file extensions in the given directory
+    file_extensions = defaultdict(int)
+
+    try:
+        for entry in os.scandir(directory):
+            if entry.is_file():
+                _, ext = os.path.splitext(entry.name)
+                file_extensions[ext] += entry.stat().st_size
+            elif entry.is_dir():
+                subdirectory_extensions = calculate_file_extensions(entry.path)
+                for ext, size in subdirectory_extensions.items():
+                    file_extensions[ext] += size
+    except (NotADirectoryError, PermissionError):
+        pass
+
+    return file_extensions
 
 def display_directory_sizes_and_disk_space(drive):
     """Displays disk space information and directory sizes."""
     while True:
         space_info = get_disk_space_info(drive)
 
-        print(f"\n[+] Total space on C:/: {space_info['total_space']}")
-        print(f"[+] Used space on C:/: {space_info['used_space']}")
-        print(f"[+] Unused space on C:/: {space_info['unused_space']}")
+        print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
+        print(f"[+] Used space on {drive}: {space_info['used_space']}")
+        print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
 
         print("\n[+] Directories:")
         directory_sizes = get_directory_sizes(drive)
@@ -74,12 +93,20 @@ def display_directory_sizes_and_disk_space(drive):
         while True:
             space_info = get_disk_space_info(drive)
 
-            print(f"\n[+] Total space on C:/: {space_info['total_space']}")
-            print(f"[+] Used space on C:/: {space_info['used_space']}")
-            print(f"[+] Unused space on C:/: {space_info['unused_space']}")
+            print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
+            print(f"[+] Used space on {drive}: {space_info['used_space']}")
+            print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
 
             print("\n[+] Selected Directory:")
             print(f"{selected_directory}")
+
+            # Calculate and display file extensions space
+            file_extensions = calculate_file_extensions(selected_directory)
+            if file_extensions:
+                print("\n[+] File Extensions:")
+                for ext, size in file_extensions.items():
+                    formatted_size = get_size_format(size)
+                    print(f"    {ext}: Size - {formatted_size}")
 
             print("\n[+] Subdirectories:")
             subdirectory_sizes = get_directory_sizes(selected_directory)
@@ -98,9 +125,8 @@ def select_directory(directory_sizes):
             for i, entry in enumerate(directory_sizes, start=1):
                 print(f"{i}. {entry['path']}: Size - {entry['size']}")
 
-            user_input = input("Enter the number of the directory to scan (or 'exit' to quit): ")
+            user_input = input(f"Enter the number of the directory to scan (or 'exit' to return to {drive}): ")
             if user_input.lower() == 'exit':
-                break
                 return None
             elif user_input.isdigit():
                 index = int(user_input)
