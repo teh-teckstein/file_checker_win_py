@@ -74,7 +74,7 @@ def calculate_file_extensions(directory):
 
     return file_extensions
 
-def display_directory_sizes_and_disk_space(drive, num_files=5, num_directories=5):
+def display_directory_sizes_and_disk_space(drive, num_files=15, num_directories=10):
     # Displays disk space information, top files, and top directories.
     while True:
         space_info = get_disk_space_info(drive)
