@@ -74,17 +74,20 @@ def calculate_file_extensions(directory):
 
     return file_extensions
 
-def display_directory_sizes_and_disk_space(drive):
-    #Displays disk space information and directory sizes.
+def display_directory_sizes_and_disk_space(drive, num_files=5, num_directories=5):
+    # Displays disk space information, top files, and top directories.
     while True:
         space_info = get_disk_space_info(drive)
 
-        print(f"\n[+] Total space on C:/: {space_info['total_space']}")
-        print(f"[+] Used space on C:/: {space_info['used_space']}")
-        print(f"[+] Unused space on C:/: {space_info['unused_space']}")
+        print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
+        print(f"[+] Used space on {drive}: {space_info['used_space']}")
+        print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
 
-        print("\n[+] Directories:")
+        print("\n[+] Top Directories:")
         directory_sizes = get_directory_sizes(drive)
+
+        for i, entry in enumerate(directory_sizes[:num_directories], start=1):
+            print(f"{i}. {entry['path']}: Size - {entry['size']}")
 
         selected_directory = select_directory(directory_sizes)
         if selected_directory is None:
@@ -93,18 +96,20 @@ def display_directory_sizes_and_disk_space(drive):
         while True:
             space_info = get_disk_space_info(drive)
 
-            print(f"\n[+] Total space on C:/: {space_info['total_space']}")
-            print(f"[+] Used space on C:/: {space_info['used_space']}")
-            print(f"[+] Unused space on C:/: {space_info['unused_space']}")
+            print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
+            print(f"[+] Used space on {drive}: {space_info['used_space']}")
+            print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
 
             print("\n[+] Selected Directory:")
             print(f"{selected_directory}")
 
-            # Calculate and display file extensions space
-            file_extensions = calculate_file_extensions(selected_directory)
-            if file_extensions:
-                print("\n[+] File Extensions:")
-                for ext, size in file_extensions.items():
+            # Calculate and display top files
+            files_in_selected_directory = calculate_file_extensions(selected_directory)
+            sorted_files = sorted(files_in_selected_directory.items(), key=lambda x: x[1], reverse=True)[:num_files]
+
+            if sorted_files:
+                print("\n[+] Top Files:")
+                for ext, size in sorted_files:
                     formatted_size = get_size_format(size)
                     print(f"    {ext}: Size - {formatted_size}")
 
@@ -116,7 +121,7 @@ def display_directory_sizes_and_disk_space(drive):
                 break
             else:
                 selected_directory = sub_selected_directory
-
+                
 def select_directory(directory_sizes):
     #Prompt the user to select a directory.
     while True:
