@@ -1,7 +1,7 @@
 import os
 import psutil
 from collections import defaultdict
-import matplotlib.pyplot as plt
+import matplotlib as plt
 
 
 def get_size_format(b, factor=1024, suffix="B"):
