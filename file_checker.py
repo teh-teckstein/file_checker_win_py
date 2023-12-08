@@ -1,6 +1,8 @@
 import os
 import psutil
 from collections import defaultdict
+import matplotlib.pyplot as plt
+
 
 def get_size_format(b, factor=1024, suffix="B"):
 #    Scale bytes to its proper byte format
@@ -73,6 +75,26 @@ def calculate_file_extensions(directory):
         pass
 
     return file_extensions
+    
+def plot_pie_chart_directories(directory_sizes, num_directories=5):
+    # Plot a pie chart for the top directories
+    labels = [entry['path'] for entry in directory_sizes[:num_directories]]
+    sizes = [entry['size_in_bytes'] for entry in directory_sizes[:num_directories]]
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.title('Top Directories')
+    plt.show()
+
+def plot_pie_chart_files(sorted_files, num_files=10):
+    # Plot a pie chart for the top files
+    labels = [ext for ext, _ in sorted_files[:num_files]]
+    sizes = [size for _, size in sorted_files[:num_files]]
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.title('Top Files')
+    plt.show()
 
 def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=5):
     # Displays disk space information, top files, and top directories.
@@ -91,6 +113,8 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
             percentage = (entry['size_in_bytes'] / total_directory_space) * 100
             print(f"{i}. {entry['path']}: Size - {entry['size']} ({percentage:.2f}%)")
 
+        plot_pie_chart_directories(directory_sizes, num_directories)
+        
         selected_directory = select_directory(directory_sizes)
         if selected_directory is None:
             break
@@ -116,6 +140,8 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
                     percentage = (size / total_file_space) * 100
                     formatted_size = get_size_format(size)
                     print(f"    {ext}: Size - {formatted_size} ({percentage:.2f}%)")
+                    
+            plot_pie_chart_files(sorted_files, num_files)
 
             print("\n[+] Subdirectories:")
             subdirectory_sizes = get_directory_sizes(selected_directory)
