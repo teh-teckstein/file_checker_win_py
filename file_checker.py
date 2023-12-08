@@ -79,9 +79,9 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
     while True:
         space_info = get_disk_space_info(drive)
 
-        print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
-        print(f"[+] Used space on {drive}: {space_info['used_space']}")
-        print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
+        print(f"\n[+] Total space on C:/: {space_info['total_space']}")
+        print(f"[+] Used space on C:/: {space_info['used_space']}")
+        print(f"[+] Unused space on C:/: {space_info['unused_space']}")
 
         print("\n[+] Top Directories:")
         directory_sizes = get_directory_sizes(drive)
@@ -98,9 +98,9 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
         while True:
             space_info = get_disk_space_info(drive)
 
-            print(f"\n[+] Total space on {drive}: {space_info['total_space']}")
-            print(f"[+] Used space on {drive}: {space_info['used_space']}")
-            print(f"[+] Unused space on {drive}: {space_info['unused_space']}")
+            print(f"\n[+] Total space on C:/: {space_info['total_space']}")
+            print(f"[+] Used space on C:/: {space_info['used_space']}")
+            print(f"[+] Unused space on C:/: {space_info['unused_space']}")
 
             print("\n[+] Selected Directory:")
             print(f"{selected_directory}")
