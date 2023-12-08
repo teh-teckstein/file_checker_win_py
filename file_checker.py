@@ -97,7 +97,6 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
             print(f"{i}. {entry['path']}: Size - {entry['size']} ({directory_percentages[i - 1]:.2f}%)")
 
         # Plot bar chart for directories
-        plt.figure(figsize=(10, 5))
         plt.bar(directory_labels, directory_sizes_bytes, color='blue')
         plt.title('Top Directories')
         plt.xlabel('Directories')
@@ -136,7 +135,6 @@ def display_directory_sizes_and_disk_space(drive, num_files=10, num_directories=
                     print(f"    {ext}: Size - {formatted_size} ({file_percentages[i]:.2f}%)")
 
                 # Plot bar chart for files
-                plt.figure(figsize=(10, 5))
                 plt.bar(file_labels, file_sizes_bytes, color='green')
                 plt.title('Top Files')
                 plt.xlabel('File Extensions')
